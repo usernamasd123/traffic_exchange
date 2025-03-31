@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { AuthResponse, LoginForm, RegisterForm, TrafficRequest, TrafficProvider } from '../types';
+import { AuthResponse, LoginForm, RegisterForm, TrafficRequest, TrafficProvider, Advertiser, Request } from '../types';
 
-const API_URL = 'http://localhost:8000/api';
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
 const api = axios.create({
     baseURL: API_URL,
@@ -61,26 +61,16 @@ export const trafficRequestService = {
 
 // Поставщики трафика
 export const trafficProviderService = {
-    getAll: async (): Promise<TrafficProvider[]> => {
-        const response = await api.get<TrafficProvider[]>('/providers');
-        return response.data;
-    },
+    getAll: () => api.get<TrafficProvider[]>('/providers').then(response => response.data),
+    getById: (id: number) => api.get<TrafficProvider>(`/providers/${id}`).then(response => response.data),
+};
 
-    getMy: async (): Promise<TrafficProvider[]> => {
-        const response = await api.get<TrafficProvider[]>('/providers/my');
-        return response.data;
-    },
+export const advertiserService = {
+    getAll: () => api.get<Advertiser[]>('/advertisers').then(response => response.data),
+    getById: (id: number) => api.get<Advertiser>(`/advertisers/${id}`).then(response => response.data),
+};
 
-    create: async (data: Omit<TrafficProvider, 'id' | 'user_id' | 'created_at' | 'status'>): Promise<TrafficProvider> => {
-        const response = await api.post<TrafficProvider>('/providers', data);
-        return response.data;
-    },
-
-    updateStatus: async (id: number, status: TrafficProvider['status']): Promise<void> => {
-        await api.put(`/providers/${id}/status`, { status });
-    },
-
-    updateAvailableTraffic: async (id: number, available_traffic: number): Promise<void> => {
-        await api.put(`/providers/${id}/available_traffic`, { available_traffic });
-    },
+export const requestService = {
+    create: (data: Omit<Request, 'id' | 'status' | 'created_at'>) => 
+        api.post<Request>('/requests', data).then(response => response.data),
 }; 

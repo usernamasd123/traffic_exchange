@@ -25,6 +25,25 @@ export interface TrafficProvider {
     updated_at: string;
 }
 
+export interface Advertiser {
+    id: number;
+    name: string;
+    description: string;
+    status: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface Request {
+    id: number;
+    type: 'provider' | 'advertiser';
+    target_id: number;
+    telegram: string;
+    message: string;
+    status: string;
+    created_at: string;
+}
+
 export interface AuthResponse {
     access_token: string;
     token_type: string;

@@ -9,29 +9,29 @@ import {
     Box,
     Button,
 } from '@mui/material';
-import { TrafficProvider } from '../../types';
-import { trafficProviderService } from '../../services/api';
+import { Advertiser } from '../../types';
+import { advertiserService } from '../../services/api';
 import { RequestForm } from '../RequestForm';
 
-export const TrafficProviderList: React.FC = () => {
-    const [providers, setProviders] = useState<TrafficProvider[]>([]);
+export const AdvertiserList: React.FC = () => {
+    const [advertisers, setAdvertisers] = useState<Advertiser[]>([]);
     const [loading, setLoading] = useState(true);
-    const [selectedProvider, setSelectedProvider] = useState<TrafficProvider | null>(null);
+    const [selectedAdvertiser, setSelectedAdvertiser] = useState<Advertiser | null>(null);
     const [requestFormOpen, setRequestFormOpen] = useState(false);
 
     useEffect(() => {
-        const fetchProviders = async () => {
+        const fetchAdvertisers = async () => {
             try {
-                const response = await trafficProviderService.getAll();
-                setProviders(response);
+                const response = await advertiserService.getAll();
+                setAdvertisers(response);
             } catch (error) {
-                console.error('Error fetching providers:', error);
+                console.error('Error fetching advertisers:', error);
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchProviders();
+        fetchAdvertisers();
     }, []);
 
     const getStatusColor = (status: string) => {
@@ -47,8 +47,8 @@ export const TrafficProviderList: React.FC = () => {
         }
     };
 
-    const handleRequestClick = (provider: TrafficProvider) => {
-        setSelectedProvider(provider);
+    const handleRequestClick = (advertiser: Advertiser) => {
+        setSelectedAdvertiser(advertiser);
         setRequestFormOpen(true);
     };
 
@@ -63,33 +63,33 @@ export const TrafficProviderList: React.FC = () => {
     return (
         <Box sx={{ flexGrow: 1, p: 3 }}>
             <Typography variant="h4" gutterBottom>
-                Поставщики трафика
+                Рекламодатели
             </Typography>
             <Box sx={{ mt: 3 }}>
                 <Grid container spacing={3}>
-                    {providers.map((provider) => (
-                        <Grid item key={provider.id} xs={12} sm={6} md={4}>
+                    {advertisers.map((advertiser) => (
+                        <Grid item key={advertiser.id} xs={12} sm={6} md={4}>
                             <Card>
                                 <CardContent>
                                     <Typography variant="h6" component="h2">
-                                        {provider.name}
+                                        {advertiser.name}
                                     </Typography>
                                     <Typography color="textSecondary" gutterBottom>
-                                        ID: {provider.id}
+                                        ID: {advertiser.id}
                                     </Typography>
                                     <Typography variant="body2" paragraph>
-                                        {provider.description}
+                                        {advertiser.description}
                                     </Typography>
                                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 2 }}>
                                         <Chip
-                                            label={provider.status}
-                                            color={getStatusColor(provider.status) as any}
+                                            label={advertiser.status}
+                                            color={getStatusColor(advertiser.status) as any}
                                             size="small"
                                         />
                                         <Button
                                             variant="contained"
                                             size="small"
-                                            onClick={() => handleRequestClick(provider)}
+                                            onClick={() => handleRequestClick(advertiser)}
                                         >
                                             Оставить заявку
                                         </Button>
@@ -100,15 +100,15 @@ export const TrafficProviderList: React.FC = () => {
                     ))}
                 </Grid>
             </Box>
-            {selectedProvider && (
+            {selectedAdvertiser && (
                 <RequestForm
                     open={requestFormOpen}
                     onClose={() => {
                         setRequestFormOpen(false);
-                        setSelectedProvider(null);
+                        setSelectedAdvertiser(null);
                     }}
-                    type="provider"
-                    targetId={selectedProvider.id}
+                    type="advertiser"
+                    targetId={selectedAdvertiser.id}
                 />
             )}
         </Box>
